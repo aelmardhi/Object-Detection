@@ -25,10 +25,13 @@ private:
     cv::Scalar YELLOW = cv::Scalar(0, 255, 255);
     cv::Scalar RED = cv::Scalar(0,0,255);
 
+    //members
+    std::vector<std::string> classList_;
+
     //functions
     void draw_label(cv::Mat& input_image, std::string label, int left, int top);
     std::vector<cv::Mat> pre_process(cv::Mat &input_image, cv::dnn::Net &net);
-    cv::Mat post_process(cv::Mat &&input_image, std::vector<cv::Mat> &outputs, const std::vector<std::string> &class_name) ;
+    cv::Mat post_process(cv::Mat &&input_image, std::vector<cv::Mat> &outputs) ;
 public:
     ObjectDetectionModel(/* args */);
     ~ObjectDetectionModel();

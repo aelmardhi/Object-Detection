@@ -13,13 +13,12 @@ using namespace cv::dnn;
 ObjectDetectionModel::ObjectDetectionModel(){
     
      // Load class list.
-    vector<string> class_list;
     ifstream ifs("../coco.names");
     string line;
 
     while (getline(ifs, line))
     {
-        class_list.push_back(line);
+        classList_.push_back(line);
     }
     // Load image.
     Mat frame;
@@ -32,7 +31,7 @@ ObjectDetectionModel::ObjectDetectionModel(){
     vector<Mat> detections;
     detections = pre_process(frame, net);
 
-    Mat img = post_process(frame.clone(), detections, class_list);
+    Mat img = post_process(frame.clone(), detections);
 
     // Put efficiency information.
     // The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
@@ -84,7 +83,7 @@ vector<Mat> ObjectDetectionModel::pre_process(Mat &input_image, Net &net)
 }
 
 
-Mat ObjectDetectionModel::post_process(Mat &&input_image, vector<Mat> &outputs, const vector<string> &class_name) 
+Mat ObjectDetectionModel::post_process(Mat &&input_image, vector<Mat> &outputs) 
 {
     // Initialize vectors to hold respective outputs while unwrapping detections.
     vector<int> class_ids;
@@ -108,7 +107,7 @@ Mat ObjectDetectionModel::post_process(Mat &&input_image, vector<Mat> &outputs, 
         {
             float * classes_scores = data + 5;
             // Create a 1x85 Mat and store class scores of 80 classes.
-            Mat scores(1, class_name.size(), CV_32FC1, classes_scores);
+            Mat scores(1, classList_.size(), CV_32FC1, classes_scores);
             // Perform minMaxLoc and acquire index of best class score.
             Point class_id;
             double max_class_score;
@@ -158,7 +157,7 @@ Mat ObjectDetectionModel::post_process(Mat &&input_image, vector<Mat> &outputs, 
 
         // Get the label for the class name and its confidence.
         string label = format("%.2f", confidences[idx]);
-        label = class_name[class_ids[idx]] + ":" + label;
+        label = classList_[class_ids[idx]] + ":" + label;
         // Draw class labels.
         draw_label(input_image, label, left, top);
     }
