@@ -30,8 +30,9 @@ private:
     std::unique_ptr<cv::dnn::Net> net_;
     //functions
     void draw_label(cv::Mat& input_image, std::string label, int left, int top);
-    std::vector<cv::Mat> pre_process(cv::Mat &input_image);
+    std::vector<cv::Mat> pre_process(cv::Mat const &input_image);
     cv::Mat post_process(cv::Mat &&input_image, std::vector<cv::Mat> &outputs) ;
+    void DetectAndShow(cv::Mat const &frame);
 public:
     ObjectDetectionModel(std::string modelPath, std::string labelsPath);
     ~ObjectDetectionModel();

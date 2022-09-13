@@ -26,11 +26,16 @@ ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string la
 
     // Load model.
     net_ = make_unique<Net>(readNet(modelPath));
+    DetectAndShow(frame);
+   
+}
 
+ObjectDetectionModel::~ObjectDetectionModel(){}
+
+void ObjectDetectionModel::DetectAndShow(Mat const &frame){
     vector<Mat> detections;
     detections = pre_process(frame);
-
-    Mat img = post_process(frame.clone(), detections);
+     Mat img = post_process(frame.clone(), detections);
 
     // Put efficiency information.
     // The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
@@ -45,9 +50,6 @@ ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string la
     waitKey(0);
 
 }
-
-ObjectDetectionModel::~ObjectDetectionModel(){}
-
 // Draw the predicted bounding box.
 void ObjectDetectionModel::draw_label(Mat& input_image, string label, int left, int top)
 {
@@ -66,7 +68,7 @@ void ObjectDetectionModel::draw_label(Mat& input_image, string label, int left, 
 }
 
 
-vector<Mat> ObjectDetectionModel::pre_process(Mat &input_image)
+vector<Mat> ObjectDetectionModel::pre_process(Mat const &input_image)
 {
     // Convert to blob.
     Mat blob;
