@@ -25,11 +25,10 @@ ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string la
     frame = imread("../sample.jpg");
 
     // Load model.
-    Net net;
-    net = readNet(modelPath); 
+    net_ = make_unique<Net>(readNet(modelPath));
 
     vector<Mat> detections;
-    detections = pre_process(frame, net);
+    detections = pre_process(frame);
 
     Mat img = post_process(frame.clone(), detections);
 
@@ -38,7 +37,7 @@ ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string la
 
     vector<double> layersTimes;
     double freq = getTickFrequency() / 1000;
-    double t = net.getPerfProfile(layersTimes) / freq;
+    double t = net_->getPerfProfile(layersTimes) / freq;
     string label = format("Inference time : %.2f ms", t);
     putText(img, label, Point(20, 40), FONT_FACE, FONT_SCALE, RED);
 
@@ -67,17 +66,17 @@ void ObjectDetectionModel::draw_label(Mat& input_image, string label, int left, 
 }
 
 
-vector<Mat> ObjectDetectionModel::pre_process(Mat &input_image, Net &net)
+vector<Mat> ObjectDetectionModel::pre_process(Mat &input_image)
 {
     // Convert to blob.
     Mat blob;
     blobFromImage(input_image, blob, 1./255., Size(INPUT_WIDTH, INPUT_HEIGHT), Scalar(), true, false);
 
-    net.setInput(blob);
+    net_->setInput(blob);
 
     // Forward propagate.
     vector<Mat> outputs;
-    net.forward(outputs, net.getUnconnectedOutLayersNames());
+    net_->forward(outputs, net_->getUnconnectedOutLayersNames());
 
     return outputs;
 }

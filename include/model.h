@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 
-
+#include <memory>
 
 class ObjectDetectionModel
 {
@@ -27,10 +27,10 @@ private:
 
     //members
     std::vector<std::string> classList_;
-
+    std::unique_ptr<cv::dnn::Net> net_;
     //functions
     void draw_label(cv::Mat& input_image, std::string label, int left, int top);
-    std::vector<cv::Mat> pre_process(cv::Mat &input_image, cv::dnn::Net &net);
+    std::vector<cv::Mat> pre_process(cv::Mat &input_image);
     cv::Mat post_process(cv::Mat &&input_image, std::vector<cv::Mat> &outputs) ;
 public:
     ObjectDetectionModel(std::string modelPath, std::string labelsPath);
