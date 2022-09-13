@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <memory>
-
+#include <istream>
 class ObjectDetectionModel
 {
 private:
@@ -36,6 +36,7 @@ private:
 public:
     ObjectDetectionModel(std::string modelPath, std::string labelsPath);
     ~ObjectDetectionModel();
+    cv::VideoCapture& operator << (cv::VideoCapture& is);
 };
 
 

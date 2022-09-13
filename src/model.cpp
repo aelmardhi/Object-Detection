@@ -20,13 +20,13 @@ ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string la
     {
         classList_.push_back(line);
     }
-    // Load image.
-    Mat frame;
-    frame = imread("../sample.jpg");
+    // // Load image.
+    // Mat frame;
+    // frame = imread("../sample.jpg");
 
     // Load model.
     net_ = make_unique<Net>(readNet(modelPath));
-    DetectAndShow(frame);
+    // DetectAndShow(frame);
    
 }
 
@@ -47,8 +47,16 @@ void ObjectDetectionModel::DetectAndShow(Mat const &frame){
     putText(img, label, Point(20, 40), FONT_FACE, FONT_SCALE, RED);
 
     imshow("Output", img);
-    waitKey(0);
+    waitKey(1);
+}
 
+
+VideoCapture& ObjectDetectionModel::operator << (VideoCapture& is){
+    Mat img;
+    is >> img;
+    if(img.empty()) return is;
+    this->DetectAndShow(img);   
+    return is;
 }
 // Draw the predicted bounding box.
 void ObjectDetectionModel::draw_label(Mat& input_image, string label, int left, int top)
