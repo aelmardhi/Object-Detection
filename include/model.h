@@ -33,7 +33,7 @@ private:
     std::vector<cv::Mat> pre_process(cv::Mat &input_image, cv::dnn::Net &net);
     cv::Mat post_process(cv::Mat &&input_image, std::vector<cv::Mat> &outputs) ;
 public:
-    ObjectDetectionModel(/* args */);
+    ObjectDetectionModel(std::string modelPath, std::string labelsPath);
     ~ObjectDetectionModel();
 };
 

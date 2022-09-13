@@ -10,10 +10,10 @@ using namespace std;
 using namespace cv::dnn;
 
 //constructor
-ObjectDetectionModel::ObjectDetectionModel(){
+ObjectDetectionModel::ObjectDetectionModel(std::string modelPath, std::string labelsPath){
     
      // Load class list.
-    ifstream ifs("../coco.names");
+    ifstream ifs(labelsPath);
     string line;
 
     while (getline(ifs, line))
@@ -26,7 +26,7 @@ ObjectDetectionModel::ObjectDetectionModel(){
 
     // Load model.
     Net net;
-    net = readNet("../models/yolov5s.onnx"); 
+    net = readNet(modelPath); 
 
     vector<Mat> detections;
     detections = pre_process(frame, net);
